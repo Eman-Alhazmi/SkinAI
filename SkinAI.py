@@ -149,7 +149,17 @@ uploaded_file = st.file_uploader("Upload a skin image", type=["jpg", "jpeg", "pn
 camera_file = st.camera_input("Or take a picture")
 
 # Use uploaded image or camera input
-image_data = uploaded_file if uploaded_file else camera_file
+# image_data = uploaded_file if uploaded_file else camera_file
+#++++++++++++++++
+st.markdown(
+    f"""
+    <div style="text-align:center;">
+        <img src="data:image/png;base64,{Image.open(image_data).convert("RGB").resize((300,300)).tobytes().hex()}" style="max-width: 100%; height: auto; border-radius: 15px;" />
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+#+++++++++++++++++++++
 
 if image_data is not None:
     img = Image.open(image_data).convert("RGB")
