@@ -12,11 +12,19 @@ st.set_page_config(page_title="SkinAI", layout="wide")
 class_names = ["chickenpox", "hfmd", "measles", "unknown"]
 
 # Load model once
-@st.cache(allow_output_mutation=True)
-def load_model():
-    return keras.models.load_model("VGG19-96.keras")
+# تحميل النموذج من Google Drive إذا لم يكن موجودًا
+@st.cache_resource
+def download_and_load_model():
+    model_path = "VGG19-96.keras"
+    if not os.path.exists(model_path):
+        # هذا هو ID من رابط Google Drive وليس الرابط الكامل
+        file_id = "1LQ4HD_VvWffWkyy3EIfIcRRgoGkmAbMz"
+        gdown.download(f"https://drive.google.com/file/d/1LQ4HD_VvWffWkyy3EIfIcRRgoGkmAbMz/view?usp=share_link={file_id}", model_path, quiet=False)
+    return keras.models.load_model(model_path)
 
-model = load_model()
+# تحميل النموذج
+model = download_and_load_model()
+
 
 css = f"""
     <style>
