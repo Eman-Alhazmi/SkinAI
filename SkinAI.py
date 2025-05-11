@@ -17,7 +17,7 @@ import os
 import tempfile
 
 # إعداد الصفحة
-st.set_page_config(page_title="SkinAI", layout="centered")
+st.set_page_config(page_title="SkinAI", layout="wide")
 class_names = ["chickenpox", "hfmd", "measles", "unknown"]
 
 @st.cache_resource
@@ -35,6 +35,8 @@ except Exception as e:
     st.error(f"❌ Error loading model: {e}")
 
 
+
+# UI Styling
 css = f"""
     <style>
     .stApp {{
