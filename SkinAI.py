@@ -38,7 +38,7 @@ css = f"""
         font-family: 'Arial', sans-serif;
     }}
     .custom-box {{
-        background-color: #FFFFFF;
+        background-color: #A0522D;
         border-radius: 30px;
         padding: 40px;
         max-width: 500px;
