@@ -14,7 +14,7 @@ class_names = ["chickenpox", "hfmd", "measles", "unknown"]
 # Load model once
 @st.cache(allow_output_mutation=True)
 def load_model():
-    return keras.models.load_model("VGG19-96.keras")
+    return keras.models.load_model("https://drive.google.com/file/d/1pRUGLcLattWs4MI2U9YFq8ltbbSF7p1_/view?usp=share_link")
 
 model = load_model()
 
