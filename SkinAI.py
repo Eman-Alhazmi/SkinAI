@@ -19,6 +19,7 @@ import gspread
  # إعداد الصفحة
 st.set_page_config(page_title="SkinAI", layout="wide")
 class_names = ["chickenpox", "hfmd", "measles", "unknown"]
+temp_model_path = None
 
 @st.cache_resource
 def download_and_load_model():
@@ -30,7 +31,7 @@ def download_and_load_model():
          return keras.models.load_model(tmp_file.name), temp_file_path
 
 try:
-     model,temp_file_path = download_and_load_model()
+     model,temp_model_path = download_and_load_model()
      st.success("✅ VGG19 model loaded successfully!")
 except Exception as e:
      st.error(f"❌ Error loading model: {e}")
