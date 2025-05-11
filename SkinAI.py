@@ -8,27 +8,27 @@ import os
 import tempfile
 
  # إعداد الصفحة
- st.set_page_config(page_title="SkinAI", layout="wide")
- class_names = ["chickenpox", "hfmd", "measles", "unknown"]
+st.set_page_config(page_title="SkinAI", layout="wide")
+class_names = ["chickenpox", "hfmd", "measles", "unknown"]
 
- @st.cache_resource
- def download_and_load_model():
+@st.cache_resource
+def download_and_load_model():
      file_id = "1LQ4HD_VvWffWkyy3EIfIcRRgoGkmAbMz"  # تأكد أنه بدون "_"
      url = f"https://drive.google.com/uc?id={file_id}"
      with tempfile.NamedTemporaryFile(delete=False, suffix=".keras") as tmp_file:
          gdown.download(url, tmp_file.name, quiet=False)
          return keras.models.load_model(tmp_file.name)
 
- try:
+try:
      model = download_and_load_model()
      st.success("✅ VGG19 model loaded successfully!")
- except Exception as e:
+except Exception as e:
      st.error(f"❌ Error loading model: {e}")
 
 
 
  # UI Styling
- css = f"""
+css = f"""
      <style>
      .stApp {{
          background-image: url("https://i0.wp.com/post.healthline.com/wp-content/uploads/2022/04/hand-foot-and-mouth-disease-body8.jpg?w=1155&h=1528");
@@ -85,22 +85,22 @@ import tempfile
      }}
      </style>
      """
- st.markdown(css, unsafe_allow_html=True)
+st.markdown(css, unsafe_allow_html=True)
 
 
 # # Logo and title on left
- st.markdown("""
+st.markdown("""
      <div style="position: absolute; top: -75px; left: -50px; color: white;">
          <h1 style="color: black;"><strong>Skin<span style='color:#4F9CDA'>AI</span></strong></h1>
          <p style="font-size:20px; color:black;">AI-POWERED CHILD<br>SKIN DISEASE DETECTION</p>
      </div>
- """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
  # Center UI
  # st.markdown('<div class="custom-box"><div class="title">CHECK SKIN</div> <button class="TAKE-PICTURE" onclick="image_data = takePicture()">Take Picture </button> <button class="upload" onclick="uploadPicture()">UPLOAD PICTURE </button>', unsafe_allow_html=True)
  # Function to handle picture taking (could be connected to a camera API)
 
- st.markdown("""
+st.markdown("""
      <style>
          .custom-box {
              background-color: #f2f2f2;
@@ -132,17 +132,17 @@ import tempfile
      <div class="custom-box">
          <div class="title">CHECK SKIN</div>
      </div>
- """, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 
  # Upload or take image
- uploaded_file = st.file_uploader("Upload a skin image", type=["jpg", "jpeg", "png"])
- camera_file = st.camera_input("Or take a picture")
+uploaded_file = st.file_uploader("Upload a skin image", type=["jpg", "jpeg", "png"])
+camera_file = st.camera_input("Or take a picture")
 
  # Use uploaded image or camera input
- image_data = uploaded_file if uploaded_file else camera_file
+image_data = uploaded_file if uploaded_file else camera_file
 
- if image_data is not None:
+if image_data is not None:
      img = Image.open(image_data).convert("RGB")
      img_resized = img.resize((224, 224))
      img_array = np.array(img_resized) / 255.0
@@ -163,7 +163,7 @@ import tempfile
          </div>
      """, unsafe_allow_html=True)
 
- st.markdown("</div>", unsafe_allow_html=True)
+st.markdown("</div>", unsafe_allow_html=True)
 
 # قسم About Us
 st.markdown("""
