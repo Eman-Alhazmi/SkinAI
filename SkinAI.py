@@ -194,56 +194,65 @@ try:
 except Exception as e:
     st.error(f"❌ Error loading model: {e}")
 
-# تصميم الواجهة
-css = """
-    <style>
-    .stApp {
-        background-image: url("https://i0.wp.com/post.healthline.com/wp-content/uploads/2022/04/hand-foot-and-mouth-disease-body8.jpg?w=1155&h=1528");
-        background-size: cover;
-        background-position: center;
-        font-family: 'Arial', sans-serif;
-    }
-    .custom-box {
-        background-color: #FFFFFF;
-        border-radius: 20px;
-        padding: 30px;
-        max-width: 600px;
-        margin: 50px auto;
-        box-shadow: 0px 4px 20px rgba(0,0,0,0.2);
-        text-align: center;
-    }
-    .result-box {
-        background-color: #FFFFFF;
-        border-radius: 15px;
-        padding: 20px;
-        margin-top: 30px;
-        text-align: center;
-        color: #000;
-        box-shadow: 0px 4px 15px rgba(0,0,0,0.15);
-    }
-    </style>
-"""
-st.markdown(css, unsafe_allow_html=True)
-
-# عنوان
+# تنسيق CSS
 st.markdown("""
-    <div class="custom-box">
-        <h1 style="color: #000;"><strong>Skin<span style='color:#4F9CDA'>AI</span></strong></h1>
-        <p style="font-size:18px; color:#333;">AI-Powered Child Skin Disease Detection</p>
+    <style>
+        .header {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .header h1 {
+            font-size: 48px;
+            color: #000;
+        }
+        .header p {
+            font-size: 18px;
+            color: #555;
+        }
+        .button-row {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .result-box {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+            margin-top: 30px;
+            text-align: center;
+        }
+        .about {
+            background-color: #f9f9f9;
+            padding: 40px;
+            margin-top: 60px;
+            border-radius: 10px;
+        }
+        .about h2 {
+            color: #0D0D1C;
+        }
+        .about p {
+            font-size: 16px;
+            color: #333;
+        }
+    </style>
+""", unsafe_allow_html=True)
+
+# العنوان الرئيسي
+st.markdown("""
+    <div class="header">
+        <h1><strong>Skin<span style='color:#4F9CDA'>AI</span></strong></h1>
+        <p>AI-Powered Child Skin Disease Detection</p>
     </div>
 """, unsafe_allow_html=True)
 
-# واجهة تحميل الصورة
-st.markdown("<div class='custom-box'>", unsafe_allow_html=True)
-
-uploaded_file = st.file_uploader("📤 Upload a skin image", type=["jpg", "jpeg", "png"])
-
-# الكاميرا بحجم أصغر في المنتصف
-col1, col2, col3 = st.columns([2, 1, 2])
-with col2:
-    camera_file = st.camera_input("📷 Or take a picture")
-
-st.markdown("</div>", unsafe_allow_html=True)
+# رفع أو التقاط الصورة
+col_upload, col_camera = st.columns(2)
+with col_upload:
+    uploaded_file = st.file_uploader("📤 Upload Picture", type=["jpg", "jpeg", "png"])
+with col_camera:
+    camera_file = st.camera_input("📷 Take Picture")
 
 # استخدام الصورة المختارة
 image_data = uploaded_file if uploaded_file else camera_file
@@ -259,15 +268,26 @@ if image_data is not None:
     predicted_class = class_names[np.argmax(predictions)]
     confidence = float(np.max(predictions)) * 100
 
-    # عرض النتيجة والصورة في الوسط
-    col_result = st.columns([1, 2, 1])[1]
-    with col_result:
-        st.image(img.resize((300, 300)), caption="Uploaded Image", use_column_width=False)
+    # عرض النتائج
+    st.image(img.resize((300, 300)), caption="Uploaded Image", use_column_width=False)
 
-        st.markdown(f"""
-            <div class="result-box">
-                <h2>Disease: {predicted_class.upper()}</h2>
-                <p style="font-size:18px;">Confidence: {confidence:.2f}%</p>
-            </div>
-        """, unsafe_allow_html=True)
+    st.markdown(f"""
+        <div class="result-box">
+            <h2>Disease: {predicted_class.upper()}</h2>
+            <p style="font-size:18px;">Confidence: {confidence:.2f}%</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+# قسم About Us
+st.markdown("""
+    <div class="about">
+        <h2>About Us</h2>
+        <p>
+        We are a specialized team dedicated to developing intelligent solutions for children’s care. 
+        We use the latest artificial-intelligence techniques to analyze skin images and detect infectious 
+        skin diseases with precision and speed. Our goal is to empower parents and healthcare professionals 
+        to make early diagnoses of your child’s skin conditions—saving you time and preventing symptoms from worsening.
+        </p>
+    </div>
+""", unsafe_allow_html=True)
 
