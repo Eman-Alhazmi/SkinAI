@@ -28,7 +28,7 @@ except Exception as e:
      st.error(f"❌ Error loading model: {e}")
 
 
-def save_image_locally(image_data, folder="Save images",filename=""):
+def save_image_locally(image_data, folder="Save Images",filename=""):
     
     try:
         # Create the folder if it doesn't exist
