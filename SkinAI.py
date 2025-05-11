@@ -25,7 +25,7 @@ def download_and_load_model():
      file_id = "1LQ4HD_VvWffWkyy3EIfIcRRgoGkmAbMz"  # تأكد أنه بدون "_"
      url = f"https://drive.google.com/uc?id={file_id}"
      with tempfile.NamedTemporaryFile(delete=False, suffix=".keras") as tmp_file:
-         gdown.download(url, tmp_file.name, quiet=False)
+         gdown.download(url, tempfile.name, quiet=False)
          return keras.models.load_model(tmp_file.name), temp_file.name
 
 try:
@@ -98,8 +98,8 @@ def write_to_google_sheet(image_link, timestamp, prediction, confidence):
         print(f"Error writing to Google Sheets: {e}")
         return False
 
-file_id = "1pRUGLcLattWs4MI2U9YFq8ltbbSF7p1_"
-tmp_model_path = None  # Initialize tmp_model_path outside the try block
+# file_id = "1pRUGLcLattWs4MI2U9YFq8ltbbSF7p1_"
+# tmp_model_path = None  # Initialize tmp_model_path outside the try block
 
 # try:
 #     # Create a temporary file path
