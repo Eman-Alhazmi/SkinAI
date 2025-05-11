@@ -36,8 +36,10 @@ class_names = ["chickenpox", "hfmd", "measles", "unknown"]
 
 
 Drive_folder_id = "1QjKqimyKX79TCBzyZq8eU0vMbMbs0w1D"
-
-service_account_info = st.secrets["google_service_account"]
+try:
+    service_account_info = st.secrets["google_service_account"]
+except:
+    st.error("failed to get secrets")
 scopes = ['https://www.googleapis.com/auth/drive','https://www.googleapis.com/auth/spreadsheets']
 credentials = service_account.Credentials.from_service_account_info(service_account_info)
 creds_with_scope = credentials.with_scopes(scopes)
