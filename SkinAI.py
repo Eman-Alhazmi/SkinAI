@@ -19,6 +19,7 @@ import gspread
  # إعداد الصفحة
 st.set_page_config(page_title="SkinAI", layout="wide")
 class_names = ["chickenpox", "hfmd", "measles", "unknown"]
+temp_file_path = None
 
 @st.cache_resource
 def download_and_load_model():
@@ -98,38 +99,6 @@ def write_to_google_sheet(image_link, timestamp, prediction, confidence):
     except Exception as e:
         print(f"Error writing to Google Sheets: {e}")
         return False
-
-# file_id = "1pRUGLcLattWs4MI2U9YFq8ltbbSF7p1_"
-# tmp_model_path = None  # Initialize tmp_model_path outside the try block
-
-# try:
-#     # Create a temporary file path
-#     with tempfile.NamedTemporaryFile(delete=False, suffix=".keras") as tmp_file:
-#         tmp_model_path = tmp_file.name
-#         print(f"Temporary model file will be saved to: {tmp_model_path}")
-
-#     # Download the model from Google Drive using gdown
-#     print(f"Downloading model from Google Drive ID: {file_id} to c:/Users/emanm/OneDrive/Desktop/python/New folder/task2")
-#     gdown.download(f"https://drive.google.com/uc?id={file_id}", tmp_model_path, quiet=False)
-#     print("Download complete.")
-
-#     # Load the model
-#     print(f"Loading model from: {tmp_model_path}")
-#     model = keras.models.load_model(tmp_model_path)
-#     print("Model loaded successfully!")
-#     st.success("VGG19 model loaded successfully!")
-
-# except Exception as e:
-#     st.error(f"An error occurred: {e}")
-# finally:
-#     # Clean up the temporary file
-#     try:
-#         os.remove(tmp_model_path)
-#         print(f"Temporary file {tmp_model_path} removed.")
-#     except OSError as e:
-#         print(f"Error removing temporary file {tmp_model_path}: {e}")
-
-
 
 
  # UI Styling
