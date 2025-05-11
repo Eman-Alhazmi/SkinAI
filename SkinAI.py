@@ -85,9 +85,10 @@ def write_to_google_sheet(image_link, timestamp, prediction, confidence):
 
         # Open the spreadsheet
         worksheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1QfT6B7VodasOaiu77yQhmST5w-8NcOtPwZ_aT4NcteM/edit?gid=").get_worksheet_by_id("0")
-
+        confidence_str = f"{confidence:.2f}%"
+        
         # Prepare the data to be written
-        data = [image_link, timestamp, prediction, confidence]
+        data = [image_link, timestamp, prediction, confidence_str]
 
         # Write the data as a new row in the sheet
         worksheet.append_row(data)
