@@ -141,7 +141,7 @@ uploaded_file = st.file_uploader("Upload a skin image", type=["jpg", "jpeg", "pn
 camera_file = st.camera_input("Or take a picture")
 
 # Use uploaded image or camera input
-    image_data = uploaded_file if uploaded_file else camera_file
+image_data = uploaded_file if uploaded_file else camera_file
 
 if image_data is not None:
     img = Image.open(image_data).convert("RGB")
@@ -156,12 +156,12 @@ if image_data is not None:
 
     # Show result screen
     
-    st.image(Image.open(image_data), use_column_width=False)
-
-    
+    st.image(img.resize((300, 300)), caption="Uploaded Image", use_column_width=False)
     st.markdown(f"""
-        <div style='background-color:#FFFFFF;padding:20px;border-radius:15px;text-align:center'>
-            <h2 style='color:#000066;'>Disease: {predicted_class.upper()}</h2>
-            <p style='font-size:20px; color: black ; '>Confidence: {confidence:.2f}%</p>
+        <div style='background-color:#FFFFFF;padding:20px;border-radius:15px;text-align:center;margin-top:20px'>
+            <h2 style='color:#FF4444;'>Disease: {predicted_class.upper()}</h2>
+            <p style='font-size:20px; color: black;'>Confidence: {confidence:.2f}%</p>
         </div>
     """, unsafe_allow_html=True)
+
+st.markdown("</div>", unsafe_allow_html=True)
