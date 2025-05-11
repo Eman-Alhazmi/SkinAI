@@ -257,7 +257,7 @@ camera_file = st.camera_input("Or take a picture")
  # Use uploaded image or camera input
 image_data = uploaded_file if uploaded_file else camera_file
 
-save_image_locally(image_data)
+
 
 if image_data is not None:
      timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
