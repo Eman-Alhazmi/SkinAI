@@ -89,7 +89,7 @@ def write_to_google_sheet(image_link, timestamp, prediction, confidence):
 
         # Write the data as a new row in the sheet
         worksheet.append_row(data)
-        print(f"Data successfully written to {sheet_name}.")
+        print(f"Data successfully written to Google sheet.")
         return True
     except Exception as e:
         print(f"Error writing to Google Sheets: {e}")
