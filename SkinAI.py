@@ -6,6 +6,8 @@ import keras
 import gdown
 import os
 import tempfile
+import datetime
+import io
 
  # إعداد الصفحة
 st.set_page_config(page_title="SkinAI", layout="wide")
@@ -24,6 +26,64 @@ try:
      st.success("✅ VGG19 model loaded successfully!")
 except Exception as e:
      st.error(f"❌ Error loading model: {e}")
+
+
+def save_image_locally(image_data, folder="Save images",filename=""):
+    
+    try:
+        # Create the folder if it doesn't exist
+        if not os.path.exists(folder):
+            os.makedirs(folder)
+
+        # Generate a unique filename if not provided
+        if not filename:
+            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+            filename = f"captured_image_{timestamp}.jpg"
+        filepath = os.path.join(folder, filename)
+
+        # Save the image data to the file
+        if isinstance(image_data, io.BytesIO):
+            with open(filepath, "wb") as f:
+                f.write(image_data.getvalue())
+        else:  # Assume it's a CameraInput or UploadedFile
+            with open(filepath, "wb") as f:
+                f.write(image_data.read())
+        return filepath
+    except Exception as e:
+        print(f"Error saving image locally: {e}")
+        return None
+
+
+file_id = "1pRUGLcLattWs4MI2U9YFq8ltbbSF7p1_"
+tmp_model_path = None  # Initialize tmp_model_path outside the try block
+
+try:
+    # Create a temporary file path
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".keras") as tmp_file:
+        tmp_model_path = tmp_file.name
+        print(f"Temporary model file will be saved to: {tmp_model_path}")
+
+    # Download the model from Google Drive using gdown
+    print(f"Downloading model from Google Drive ID: {file_id} to c:/Users/emanm/OneDrive/Desktop/python/New folder/task2")
+    gdown.download(f"https://drive.google.com/uc?id={file_id}", tmp_model_path, quiet=False)
+    print("Download complete.")
+
+    # Load the model
+    print(f"Loading model from: {tmp_model_path}")
+    model = keras.models.load_model(tmp_model_path)
+    print("Model loaded successfully!")
+    st.success("VGG19 model loaded successfully!")
+
+except Exception as e:
+    st.error(f"An error occurred: {e}")
+finally:
+    # Clean up the temporary file
+    try:
+        os.remove(tmp_model_path)
+        print(f"Temporary file {tmp_model_path} removed.")
+    except OSError as e:
+        print(f"Error removing temporary file {tmp_model_path}: {e}")
+
 
 
 
@@ -141,6 +201,8 @@ camera_file = st.camera_input("Or take a picture")
 
  # Use uploaded image or camera input
 image_data = uploaded_file if uploaded_file else camera_file
+
+save_image_locally(image_data)
 
 if image_data is not None:
      img = Image.open(image_data).convert("RGB")
