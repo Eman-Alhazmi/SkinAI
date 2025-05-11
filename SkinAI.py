@@ -156,7 +156,7 @@ if image_data is not None:
 
     # Show result screen
     
-    st.image(img.resize((300, 300)), caption="Uploaded Image", use_column_width=False)
+    st.image(img.resize((350, 350)), caption="Uploaded Image", use_column_width=False)
     st.markdown(f"""
         <div style='background-color:#FFFFFF;padding:20px;border-radius:15px;text-align:center;margin-top:20px'>
             <h2 style='color:#FF4444;'>Disease: {predicted_class.upper()}</h2>
