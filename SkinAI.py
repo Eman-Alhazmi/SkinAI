@@ -1,31 +1,33 @@
 import streamlit as st
 import numpy as np
 import tensorflow as tf
-import cv2
 from PIL import Image
 import keras
-import  gdown
-import os
-
+import gdown
+import os 
+import tempfile
 
 # Setup
-st.set_page_config(page_title="SkinAI", layout="wide")
-# Class names
+st.set_page_config(page_title="SkinAI", layout="centered")
 class_names = ["chickenpox", "hfmd", "measles", "unknown"]
 
-# Load model once
-# تحميل النموذج من Google Drive إذا لم يكن موجودًا
-@st.cache_resource
-def download_and_load_model():
-    model_path = "VGG19-96.keras"
-    if not os.path.exists(model_path):
-        # هذا هو ID من رابط Google Drive وليس الرابط الكامل
-        file_id = "1LQ4HD_VvWffWkyy3EIfIcRRgoGkmAbMz"
-        gdown.download(f"https://drive.google.com/file/d/1LQ4HD_VvWffWkyy3EIfIcRRgoGkmAbMz/view?usp=share_link={file_id}", model_path, quiet=False)
-    return keras.models.load_model(model_path)
+# Load model
+file_id = "1LQ4HD_VvWffWkyy3EIfIcRRgoGkmAbMz_"
+tmp_model_path = None
 
-# تحميل النموذج
-model = download_and_load_model()
+try:
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".keras") as tmp_file:
+        tmp_model_path = tmp_file.name
+        gdown.download(f"https://drive.google.com/file/d/1LQ4HD_VvWffWkyy3EIfIcRRgoGkmAbMz/view?usp=share_link={file_id}", tmp_model_path, quiet=False)
+    model = keras.models.load_model(tmp_model_path)
+    st.success("✅ VGG19 model loaded successfully!")
+except Exception as e:
+    st.error(f"Error loading model: {e}")
+finally:
+    try:
+        os.remove(tmp_model_path)
+    except OSError:
+        pass
 
 
 css = f"""
