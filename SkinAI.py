@@ -248,7 +248,7 @@ image_data = uploaded_file if uploaded_file else camera_file
 
 
 if image_data is not None:
-     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+     timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
      filename = f"captured_image_{timestamp}.jpg" 
      img = Image.open(image_data).convert("RGB")
      img_resized = img.resize((224, 224))
