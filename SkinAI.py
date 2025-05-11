@@ -19,7 +19,6 @@ import gspread
  # إعداد الصفحة
 st.set_page_config(page_title="SkinAI", layout="wide")
 class_names = ["chickenpox", "hfmd", "measles", "unknown"]
-temp_file_path = None
 
 @st.cache_resource
 def download_and_load_model():
