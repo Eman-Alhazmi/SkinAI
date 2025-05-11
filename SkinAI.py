@@ -194,79 +194,58 @@ try:
 except Exception as e:
     st.error(f"❌ Error loading model: {e}")
 
-# UI Styling
-css = f"""
+# تصميم الواجهة
+css = """
     <style>
-    .stApp {{
+    .stApp {
         background-image: url("https://i0.wp.com/post.healthline.com/wp-content/uploads/2022/04/hand-foot-and-mouth-disease-body8.jpg?w=1155&h=1528");
         background-size: cover;
         background-position: center;
         font-family: 'Arial', sans-serif;
-    }}
-    .custom-box {{
-        background-color: #A0522D;
-        border-radius: 30px;
-        padding: 40px;
-        max-width: 500px;
-        margin: auto;
+    }
+    .custom-box {
+        background-color: #FFFFFF;
+        border-radius: 20px;
+        padding: 30px;
+        max-width: 600px;
+        margin: 50px auto;
         box-shadow: 0px 4px 20px rgba(0,0,0,0.2);
         text-align: center;
-        color: white;
-    }}
-    .TAKE-PICTURE, .upload {{
-        background-color: white;
-        color: #0D0D1C;
-        border-radius: 20px;
-        padding: 10px 20px;
-        font-size: 16px;
-        font-weight: bold;
-        border: none;
-        box-shadow: 0px 4px 6px rgba(0,0,0,0.1);
-        margin: 10px;
-    }}
-    .title {{
-        color: black;
-        font-size: 36px;
-        font-weight: 800;
-        margin-bottom: 20px;
-    }}
-    .subtitle {{
-        font-size: 18px;
-        color: #0D0D1C;
-    }}
-    .logo {{
-        position: absolute;
-        top: 20px;
-        right: 20px;
-        max-height: 60px;
-    }}
+    }
+    .result-box {
+        background-color: #FFFFFF;
+        border-radius: 15px;
+        padding: 20px;
+        margin-top: 30px;
+        text-align: center;
+        color: #000;
+        box-shadow: 0px 4px 15px rgba(0,0,0,0.15);
+    }
     </style>
 """
 st.markdown(css, unsafe_allow_html=True)
 
-# Logo and title
-st.markdown("""
-    <div style="position: absolute; top: -75px; left: -50px; color: white;">
-        <h1 style="color: black;"><strong>Skin<span style='color:#4F9CDA'>AI</span></strong></h1>
-        <p style="font-size:20px; color:black;">AI-POWERED CHILD<br>SKIN DISEASE DETECTION</p>
-    </div>
-""", unsafe_allow_html=True)
-
-# واجهة المستخدم
+# عنوان
 st.markdown("""
     <div class="custom-box">
-        <div class="title">CHECK SKIN</div>
+        <h1 style="color: #000;"><strong>Skin<span style='color:#4F9CDA'>AI</span></strong></h1>
+        <p style="font-size:18px; color:#333;">AI-Powered Child Skin Disease Detection</p>
     </div>
 """, unsafe_allow_html=True)
 
-# رفع صورة أو التقاطها بالكاميرا (مع تصغير الكاميرا)
-uploaded_file = st.file_uploader("Upload a skin image", type=["jpg", "jpeg", "png"])
+# واجهة تحميل الصورة
+st.markdown("<div class='custom-box'>", unsafe_allow_html=True)
 
-col1, col2, col3 = st.columns([2, 1, 2])  # تصغير مساحة الكاميرا بوضعها في عمود ضيق
+uploaded_file = st.file_uploader("📤 Upload a skin image", type=["jpg", "jpeg", "png"])
+
+# الكاميرا بحجم أصغر في المنتصف
+col1, col2, col3 = st.columns([2, 1, 2])
 with col2:
-    camera_file = st.camera_input("Or take a picture")
+    camera_file = st.camera_input("📷 Or take a picture")
 
-# استخدام الصورة
+st.markdown("</div>", unsafe_allow_html=True)
+
+# استخدام الصورة المختارة
 image_data = uploaded_file if uploaded_file else camera_file
 
 if image_data is not None:
@@ -280,15 +259,15 @@ if image_data is not None:
     predicted_class = class_names[np.argmax(predictions)]
     confidence = float(np.max(predictions)) * 100
 
-    # عرض النتائج
-    col_center = st.columns([1, 2, 1])[1]
-    with col_center:
-        st.image(img.resize((350, 350)), caption="Uploaded Image", use_column_width=False)
+    # عرض النتيجة والصورة في الوسط
+    col_result = st.columns([1, 2, 1])[1]
+    with col_result:
+        st.image(img.resize((300, 300)), caption="Uploaded Image", use_column_width=False)
 
-    st.markdown(f"""
-        <div style='background-color:#A0522D;padding:20px;border-radius:15px;text-align:center;margin-top:20px; color:white;'>
-            <h2>Disease: {predicted_class.upper()}</h2>
-            <p style='font-size:20px;'>Confidence: {confidence:.2f}%</p>
-        </div>
-    """, unsafe_allow_html=True)
+        st.markdown(f"""
+            <div class="result-box">
+                <h2>Disease: {predicted_class.upper()}</h2>
+                <p style="font-size:18px;">Confidence: {confidence:.2f}%</p>
+            </div>
+        """, unsafe_allow_html=True)
 
