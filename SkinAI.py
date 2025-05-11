@@ -8,51 +8,106 @@ import os
 import tempfile
 import datetime
 import io
+import datetime
+import io
+from googleapiclient.discovery import build
+from googleapiclient.http import MediaIoBaseUpload
+from google.oauth2 import service_account
+import json
+import gspread
 
  # إعداد الصفحة
 st.set_page_config(page_title="SkinAI", layout="wide")
 class_names = ["chickenpox", "hfmd", "measles", "unknown"]
 
-@st.cache_resource
-def download_and_load_model():
-     file_id = "1LQ4HD_VvWffWkyy3EIfIcRRgoGkmAbMz"  # تأكد أنه بدون "_"
-     url = f"https://drive.google.com/uc?id={file_id}"
-     with tempfile.NamedTemporaryFile(delete=False, suffix=".keras") as tmp_file:
-         gdown.download(url, tmp_file.name, quiet=False)
-         return keras.models.load_model(tmp_file.name)
+# @st.cache_resource
+# def download_and_load_model():
+#      file_id = "1LQ4HD_VvWffWkyy3EIfIcRRgoGkmAbMz"  # تأكد أنه بدون "_"
+#      url = f"https://drive.google.com/uc?id={file_id}"
+#      with tempfile.NamedTemporaryFile(delete=False, suffix=".keras") as tmp_file:
+#          gdown.download(url, tmp_file.name, quiet=False)
+#          return keras.models.load_model(tmp_file.name)
 
-try:
-     model = download_and_load_model()
-     st.success("✅ VGG19 model loaded successfully!")
-except Exception as e:
-     st.error(f"❌ Error loading model: {e}")
+# try:
+#      model = download_and_load_model()
+#      st.success("✅ VGG19 model loaded successfully!")
+# except Exception as e:
+#      st.error(f"❌ Error loading model: {e}")
 
 
-def save_image_locally(image_data, folder="Save Images",filename=""):
-    
+credentials_json = """{
+    "type": "service_account",
+    "project_id": "my-project-skinai",
+    "private_key_id": "64d715d70a0bf53220a1ba750d02a9edeba36e55",
+    "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCTu4r/9SP5YNS4\nKWWXv2kqZQyVleBR6dSg/1WwAl+HbdrfiaDONNv6fya9Y8RGzEaOrfgQ9QliHO2M\nH45HPO26OzM53mlkUcAyVPZnbHxpgNdweLy4YRHwR4d7tUDJ5sldhO5De26q//cE\nrRijcCvudNTz8PD+5iufBrIJf4BKUfpFcOF6s2W5IXHlKqfwcW+Q+NLMEBH6BTyd\n+Y892MgKJ33JEi+joK1Dhdj14Ls9ZKlbC4LXvXI8F69QRJ9I6fz4MV92+RSP4Ax/\nPTJNS3PBiNfQAc7WdzOgzmRBXknfJhC+VB1jx25wsc1BSWGiJzy017fdqNmi2hLi\nafKzFFShAgMBAAECggEASBjFL8ADg+8xMQUm6uVDnih9eT0RIfjDR6UEvOaTl2TR\n5bjlbO0YFApcrh3TypdjsbsOLrxfDW4/sdwuk+6UuAevKsUz2v0YlpenPvcPSm/R\n9DZAJ51b408NPB7LVR1X1VeL7gv9iN9tPm95cD3Mes2ypbBG9KcAz9W1KnR6eAoG\nmHsJv6m7PQEUmuT+o8xpuXC8Lb6aZVRgE4HOvvixvL0HS1g5k9iEOBja1DDERJ0t\n+k0MM1e/4gdZYL8flg7ZUNKZVVCaN/hfqxkRX+APeCZjjlzYsg5CWTGf/CPwLM5r\nySd4mtxV4iqnohobVpEs3u4I48nnnuHNSbLDjt5qdwKBgQDQnHSpbnO4IuT8NYEE\nrxMxnNpkWuoWcHA4Fc/3x8RxRxc9q/4PcraRPfdZG2zTBOYzuZVW2N/cRwzOHcOF\nR8CCAxCK+9Og5Cp3k+03g425UeB5aUEu2J0up1UNEw9u6oq/ncXg2R7OdDUtKcbF\nWocBv5xcgc0TrpvTDVxgoPyj2wKBgQC1SsN50O8vc7IgpHzzTWHEhCIqFTkD6AI0\n7gYfkr0bt0+w3mXsrxc+hMH0XXOYZHkbpgH74zxYRnFPKkvKmyyI7m3xy/4USwCw\n+1zg5i8vG0ygt7Horo8iMqz6TYloLq8TCNhnl9qd5Kd7JpaKjaJGnn3stQnB+D/1\n+26wzCYQMwKBgEKztA201mVrKuKFzRINVMrJR39NHoo8O3WDa/LjOimqPIEorFyO\nJlf8g0lHnp0+dMjXLywMvk91nF+PXsQP9Drd9f0qljlcm0OO1gupEbjOuEK55/Ct\nrFyNfoFmtcmWTvUD4pCJe/MxbwtYz0itMHvbo4hkrIj9jK+IFyCCeSV/AoGAJjJK\nXTAYNPc7YIVHjjuPjcgJKrSt/pSzYlOEFsLj9SL6N1mkP+nkC9gMxV+rK0CAA8NG\nR7voyvCMjxFqRpXLHE6f+4HvVnc2/hL3zqqw5kvqKTKK2Wtt3Nawe0w61yh+2pPS\nhIEKHpo+b0QCE88jkZ1zCpxaIfQcBcej2rwoiOECgYEAtP/tzMI6Gnsq9vkCkV2Z\nTO/B+4vwgR/3RT8CamIJADkW4DUiovJ0HD6Aip+P4LxXjNo1R6NTPi13wJPksVRE\nXsAHRNEBV0a3Uzg7dt5mgZd//2a5sKP8aRWvdwJpiCrRcFDfduPx9uEoiy9kv2rN\nZIfDMb/O6OWcwl1j8ozdOyQ=\n-----END PRIVATE KEY-----\n",
+    "client_email": "eman-741@my-project-skinai.iam.gserviceaccount.com",
+    "client_id": "101472928555180320217",
+    "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+    "token_uri": "https://oauth2.googleapis.com/token",
+    "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+    "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/eman-741%40my-project-skinai.iam.gserviceaccount.com",
+    "universe_domain": "googleapis.com"
+  }"""
+
+Drive_folder_id = "1QjKqimyKX79TCBzyZq8eU0vMbMbs0w1D"
+
+service_account_info = json.loads(credentials_json, strict=False)
+scopes = ['https://www.googleapis.com/auth/drive','https://www.googleapis.com/auth/spreadsheets']
+credentials = service_account.Credentials.from_service_account_info(service_account_info)
+creds_with_scope = credentials.with_scopes(scopes)
+
+
+def upload_to_drive(image_bytes, folder_id, filename):
     try:
-        # Create the folder if it doesn't exist
-        if not os.path.exists(folder):
-            os.makedirs(folder)
+       
+        # Build Drive API client
+        drive_service = build('drive', 'v3', credentials=creds_with_scope)
 
-        # Generate a unique filename if not provided
-        if not filename:
-            timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"captured_image_{timestamp}.jpg"
-        filepath = os.path.join(folder, filename)
+        # Prepare metadata and media
+        file_metadata = {
+            'name': filename,
+            'parents': [folder_id]
+        }
+        media = MediaIoBaseUpload(io.BytesIO(image_bytes), mimetype='image/png')
 
-        # Save the image data to the file
-        if isinstance(image_data, io.BytesIO):
-            with open(filepath, "wb") as f:
-                f.write(image_data.getvalue())
-        else:  # Assume it's a CameraInput or UploadedFile
-            with open(filepath, "wb") as f:
-                f.write(image_data.read())
-        return filepath
+        # Upload the file
+        file = drive_service.files().create(
+            body=file_metadata,
+            media_body=media,
+            fields='id'
+        ).execute()
+
+        # Make it publicly accessible
+        file_id = file.get('id')
+        drive_service.permissions().create(
+            fileId=file_id,
+            body={'role': 'reader', 'type': 'anyone'},
+        ).execute()
+
+        return f"https://drive.google.com/uc?id={file_id}"
     except Exception as e:
-        print(f"Error saving image locally: {e}")
+        print(f"Error uploading to Google Drive: {e}")
         return None
 
+def write_to_google_sheet(image_link, timestamp, prediction, confidence):
+    try:
+
+        # Authenticate using the service account credentials
+        gc = gspread.authorize(creds_with_scope)
+
+        # Open the spreadsheet
+        worksheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1QfT6B7VodasOaiu77yQhmST5w-8NcOtPwZ_aT4NcteM/edit?gid=").get_worksheet_by_id("0")
+
+        # Prepare the data to be written
+        data = [image_link, timestamp, prediction, confidence]
+
+        # Write the data as a new row in the sheet
+        worksheet.append_row(data)
+        print(f"Data successfully written to {sheet_name}.")
+        return True
+    except Exception as e:
+        print(f"Error writing to Google Sheets: {e}")
+        return False
 
 file_id = "1pRUGLcLattWs4MI2U9YFq8ltbbSF7p1_"
 tmp_model_path = None  # Initialize tmp_model_path outside the try block
@@ -205,6 +260,8 @@ image_data = uploaded_file if uploaded_file else camera_file
 save_image_locally(image_data)
 
 if image_data is not None:
+     timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+     filename = f"captured_image_{timestamp}.jpg" 
      img = Image.open(image_data).convert("RGB")
      img_resized = img.resize((224, 224))
      img_array = np.array(img_resized) / 255.0
@@ -239,4 +296,27 @@ st.markdown("""
         </p>
     </div>
 """, unsafe_allow_html=True)
+
+
+try:
+      if isinstance(image_data, bytes):
+          image_bytes = image_data
+      elif isinstance(image_data, io.BytesIO):
+          image_bytes = image_data.getvalue()
+      elif hasattr(image_data, 'read'):
+          image_bytes = image_data.read()
+      else:
+          raise ValueError("Unsupported image data type")
+
+
+      drive_url = upload_to_drive(image_bytes, Drive_folder_id, filename)
+      sheet_status = write_to_google_sheet(drive_url,timestamp,predicted_class,confidence)
+      if sheet_status :
+          st.success(f"Image uploaded to Database!")               
+      else:
+          st.error("Failed to upload image to Database")
+            
+except Exception as e:
+      st.error(f"Error uploading to Google Drive: {e}")
+      print(f"Error uploading to Google Drive: {e}")
 
