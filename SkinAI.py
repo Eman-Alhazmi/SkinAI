@@ -1,11 +1,11 @@
- import streamlit as st
- import numpy as np
- import tensorflow as tf
- from PIL import Image
- import keras
- import gdown
- import os
- import tempfile
+import streamlit as st
+import numpy as np
+import tensorflow as tf
+from PIL import Image
+import keras
+import gdown
+import os
+import tempfile
 
  # إعداد الصفحة
  st.set_page_config(page_title="SkinAI", layout="wide")
