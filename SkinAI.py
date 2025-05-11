@@ -7,27 +7,32 @@ import gdown
 import os 
 import tempfile
 
-# Setup
+import streamlit as st
+import numpy as np
+import tensorflow as tf
+from PIL import Image
+import keras
+import gdown
+import os
+import tempfile
+
+# إعداد الصفحة
 st.set_page_config(page_title="SkinAI", layout="centered")
 class_names = ["chickenpox", "hfmd", "measles", "unknown"]
 
-# Load model
-file_id = "1LQ4HD_VvWffWkyy3EIfIcRRgoGkmAbMz_"
-tmp_model_path = None
+@st.cache_resource
+def download_and_load_model():
+    file_id = "1LQ4HD_VvWffWkyy3EIfIcRRgoGkmAbMz"  # تأكد أنه بدون "_"
+    url = f"https://drive.google.com/uc?id={file_id}"
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".keras") as tmp_file:
+        gdown.download(url, tmp_file.name, quiet=False)
+        return keras.models.load_model(tmp_file.name)
 
 try:
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".keras") as tmp_file:
-        tmp_model_path = tmp_file.name
-        gdown.download(f"https://drive.google.com/file/d/1LQ4HD_VvWffWkyy3EIfIcRRgoGkmAbMz/view?usp=share_link={file_id}", tmp_model_path, quiet=False)
-    model = keras.models.load_model(tmp_model_path)
+    model = download_and_load_model()
     st.success("✅ VGG19 model loaded successfully!")
 except Exception as e:
-    st.error(f"Error loading model: {e}")
-finally:
-    try:
-        os.remove(tmp_model_path)
-    except OSError:
-        pass
+    st.error(f"❌ Error loading model: {e}")
 
 
 css = f"""
