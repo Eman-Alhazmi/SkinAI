@@ -1,11 +1,3 @@
-import streamlit as st
-import numpy as np
-import tensorflow as tf
-from PIL import Image
-import keras
-import gdown
-import os 
-import tempfile
 
 import streamlit as st
 import numpy as np
@@ -149,7 +141,7 @@ uploaded_file = st.file_uploader("Upload a skin image", type=["jpg", "jpeg", "pn
 camera_file = st.camera_input("Or take a picture")
 
 # Use uploaded image or camera input
-image_data = uploaded_file if uploaded_file else camera_file
+    image_data = uploaded_file if uploaded_file else camera_file
 
 if image_data is not None:
     img = Image.open(image_data).convert("RGB")
@@ -163,7 +155,10 @@ if image_data is not None:
     confidence = float(np.max(predictions)) * 100
 
     # Show result screen
+    
     st.image(Image.open(image_data), use_column_width=False)
+
+    
     st.markdown(f"""
         <div style='background-color:#FFFFFF;padding:20px;border-radius:15px;text-align:center'>
             <h2 style='color:#000066;'>Disease: {predicted_class.upper()}</h2>
