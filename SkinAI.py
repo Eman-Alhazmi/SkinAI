@@ -257,28 +257,29 @@ if image_data is not None:
              <p style='font-size:20px; color: black;'>Confidence: {confidence:.2f}%</p>
          </div>
      """, unsafe_allow_html=True)
+     try:
+           if isinstance(image_data, bytes):
+               image_bytes = image_data
+           elif isinstance(image_data, io.BytesIO):
+               image_bytes = image_data.getvalue()
+           elif hasattr(image_data, 'read'):
+               image_bytes = image_data.read()
+           else:
+               raise ValueError("Unsupported image data type")
+     
+     
+           drive_url = upload_to_drive(image_bytes, Drive_folder_id, filename)
+           sheet_status = write_to_google_sheet(drive_url,timestamp,predicted_class,confidence)
+           if sheet_status :
+               st.success(f"Image uploaded to Database!")               
+           else:
+               st.error("Failed to upload image to Database")
+                 
+     except Exception as e:
+           st.error(f"Error uploading to Google Drive: {e}")
+           print(f"Error uploading to Google Drive: {e}")
 
 st.markdown("</div>", unsafe_allow_html=True)
 
 
-try:
-      if isinstance(image_data, bytes):
-          image_bytes = image_data
-      elif isinstance(image_data, io.BytesIO):
-          image_bytes = image_data.getvalue()
-      elif hasattr(image_data, 'read'):
-          image_bytes = image_data.read()
-      else:
-          raise ValueError("Unsupported image data type")
 
-
-      drive_url = upload_to_drive(image_bytes, Drive_folder_id, filename)
-      sheet_status = write_to_google_sheet(drive_url,timestamp,predicted_class,confidence)
-      if sheet_status :
-          st.success(f"Image uploaded to Database!")               
-      else:
-          st.error("Failed to upload image to Database")
-            
-except Exception as e:
-      st.error(f"Error uploading to Google Drive: {e}")
-      print(f"Error uploading to Google Drive: {e}")
