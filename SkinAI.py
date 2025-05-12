@@ -220,19 +220,6 @@ camera_file = st.camera_input("Or take a picture")
  # Use uploaded image or camera input
 image_data = uploaded_file if uploaded_file else camera_file
 
-# قسم About Us
-st.markdown("""
-    <div class="about">
-        <h2>About Us</h2>
-        <p>
-        We are a specialized team dedicated to developing intelligent solutions for children’s care. 
-        We use the latest artificial-intelligence techniques to analyze skin images and detect infectious 
-        skin diseases with precision and speed. Our goal is to empower parents and healthcare professionals 
-        to make early diagnoses of your child’s skin conditions—saving you time and preventing symptoms from worsening.
-        </p>
-    </div>
-""", unsafe_allow_html=True)
-
 if image_data is not None:
      timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
      filename = f"captured_image_{timestamp}.jpg" 
@@ -276,6 +263,19 @@ if image_data is not None:
      except Exception as e:
            st.error(f"Error uploading to Google Drive: {e}")
            print(f"Error uploading to Google Drive: {e}")
+
+# قسم About Us
+st.markdown("""
+    <div class="about">
+        <h2>About Us</h2>
+        <p>
+        We are a specialized team dedicated to developing intelligent solutions for children’s care. 
+        We use the latest artificial-intelligence techniques to analyze skin images and detect infectious 
+        skin diseases with precision and speed. Our goal is to empower parents and healthcare professionals 
+        to make early diagnoses of your child’s skin conditions—saving you time and preventing symptoms from worsening.
+        </p>
+    </div>
+""", unsafe_allow_html=True)
 
 st.markdown("</div>", unsafe_allow_html=True)
 
