@@ -35,6 +35,13 @@ try:
      st.success("✅ VGG19 model loaded successfully!")
 except Exception as e:
      st.error(f"❌ Error loading model: {e}")
+finally:
+   # Clean up the temporary file
+   try:
+       os.remove(temp_model_path)
+       print(f"Temporary file {temp_model_path} removed.")
+   except OSError as e:
+       print(f"Error removing temporary file {temp_model_path}: {e}")
 
 
 Drive_folder_id = "1QjKqimyKX79TCBzyZq8eU0vMbMbs0w1D"
@@ -278,10 +285,3 @@ try:
 except Exception as e:
       st.error(f"Error uploading to Google Drive: {e}")
       print(f"Error uploading to Google Drive: {e}")
-
-if st.button("End Session / Remove Model"):
-    try:
-        os.remove(temp_model_path)
-        st.success("Model removed from server.")
-    except:
-        st.warning("Could not remove model file.")
