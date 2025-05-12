@@ -93,7 +93,7 @@ def write_to_google_sheet(image_link, timestamp, prediction, confidence):
         gc = gspread.authorize(creds_with_scope)
 
         # Open the spreadsheet
-        worksheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1QfT6B7VodasOaiu77yQhmST5w-8NcOtPwZ_aT4NcteM/edit?gid=").get_worksheet_by_id("0")
+        worksheet = gc.open_by_url("https://docs.google.com/spreadsheets/d/1njSct3oTvPoPt1u9CokGgFMvcNUsdS9jq6tWiud-wJ8/edit?gid=").get_worksheet_by_id("0")
         confidence_str = f"{confidence:.2f}%"
         
         # Prepare the data to be written
