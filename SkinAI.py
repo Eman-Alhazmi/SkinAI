@@ -180,7 +180,18 @@ st.markdown("""
  # Center UI
  # st.markdown('<div class="custom-box"><div class="title">CHECK SKIN</div> <button class="TAKE-PICTURE" onclick="image_data = takePicture()">Take Picture </button> <button class="upload" onclick="uploadPicture()">UPLOAD PICTURE </button>', unsafe_allow_html=True)
  # Function to handle picture taking (could be connected to a camera API)
-
+# قسم About Us
+st.markdown("""
+    <div class="about">
+        <h2>About Us</h2>
+        <p>
+        We are a specialized team dedicated to developing intelligent solutions for children’s care. 
+        We use the latest artificial-intelligence techniques to analyze skin images and detect infectious 
+        skin diseases with precision and speed. Our goal is to empower parents and healthcare professionals 
+        to make early diagnoses of your child’s skin conditions—saving you time and preventing symptoms from worsening.
+        </p>
+    </div>
+""", unsafe_allow_html=True)
 st.markdown("""
      <style>
          .custom-box {
@@ -249,19 +260,6 @@ if image_data is not None:
      """, unsafe_allow_html=True)
 
 st.markdown("</div>", unsafe_allow_html=True)
-
-# قسم About Us
-st.markdown("""
-    <div class="about">
-        <h2>About Us</h2>
-        <p>
-        We are a specialized team dedicated to developing intelligent solutions for children’s care. 
-        We use the latest artificial-intelligence techniques to analyze skin images and detect infectious 
-        skin diseases with precision and speed. Our goal is to empower parents and healthcare professionals 
-        to make early diagnoses of your child’s skin conditions—saving you time and preventing symptoms from worsening.
-        </p>
-    </div>
-""", unsafe_allow_html=True)
 
 
 try:
