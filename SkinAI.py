@@ -281,7 +281,7 @@ except Exception as e:
 
 if st.button("End Session / Remove Model"):
     try:
-        os.remove(tmp_model_path)
+        os.remove(temp_model_path)
         st.success("Model removed from server.")
     except:
         st.warning("Could not remove model file.")
