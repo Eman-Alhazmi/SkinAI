@@ -212,6 +212,14 @@ st.markdown("""
      </div>
 """, unsafe_allow_html=True)
 
+
+ # Upload or take image
+uploaded_file = st.file_uploader("Upload a skin image", type=["jpg", "jpeg", "png"])
+camera_file = st.camera_input("Or take a picture")
+
+ # Use uploaded image or camera input
+image_data = uploaded_file if uploaded_file else camera_file
+
 # قسم About Us
 st.markdown("""
     <div class="about">
@@ -224,16 +232,6 @@ st.markdown("""
         </p>
     </div>
 """, unsafe_allow_html=True)
-
-
- # Upload or take image
-uploaded_file = st.file_uploader("Upload a skin image", type=["jpg", "jpeg", "png"])
-camera_file = st.camera_input("Or take a picture")
-
- # Use uploaded image or camera input
-image_data = uploaded_file if uploaded_file else camera_file
-
-
 
 if image_data is not None:
      timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
